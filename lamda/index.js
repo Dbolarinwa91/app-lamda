@@ -7,7 +7,7 @@ const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
 // Environment variable for table name
-const TABLE_NAME = process.env.CONTACTS_TABLE_NAME || "ContactSubmissions";
+const TABLE_NAME = process.env.CONTACTS_TABLE_NAME || "contactsubmission-devops-david-site-project";
 
 exports.handler = async (event) => {
   try {

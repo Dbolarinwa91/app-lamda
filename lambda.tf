@@ -9,22 +9,7 @@ resource "aws_dynamodb_table" "contact_submissions" {
   }
 }
 
-resource "aws_lambda_function" "contact_submission" {
-  function_name = "contactSubmissionHandler"
-  handler       = "index.handler"
-  runtime       = "nodejs20.x"
 
-  filename         = "lambda/contactSubmission.zip"
-  source_code_hash = filebase64sha256("lambda/contactSubmission.zip")
-
-  role = aws_iam_role.lambda_exec.arn
-
-  environment {
-    variables = {
-      CONTACTS_TABLE_NAME = aws_dynamodb_table.contact_submissions.name
-    }
-  }
-}
 
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec_role"
