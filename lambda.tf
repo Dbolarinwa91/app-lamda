@@ -112,7 +112,7 @@ data "archive_file" "lambda_hello_world" {
 resource "aws_lambda_function" "main" {
   function_name = "${var.project_name}-lambda"
   role          = aws_iam_role.lambda_exec.arn
-  handler       = "hello-world.handler"
+  handler       = "index.handler"
   runtime       = "nodejs18.x"
   filename      = data.archive_file.lambda_hello_world.output_path
   timeout       = 3
