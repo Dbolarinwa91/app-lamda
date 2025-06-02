@@ -72,10 +72,10 @@ resource "aws_security_group" "lambda_sg" {
 resource "aws_lambda_function" "main" {
   function_name = "${var.project_name}-lambda"
   role          = aws_iam_role.lambda_exec.arn
-  handler       = "index.handler"
+  handler       = "hello-world.handler"
   runtime       = "nodejs18.x"
   s3_bucket     = "devops-statefile-david-site-project-123456"
-  s3_key        = "devops-statefile-david-site-project-123456/index-123456.tfstate"
+  s3_key        = "web-app/index.zip"
   timeout       = 3
   memory_size   = 128
 
