@@ -31,3 +31,7 @@ jobs:
       # Uncomment the following to enable apply step
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve 
+
+permissions:
+  id-token: write
+  contents: read 
