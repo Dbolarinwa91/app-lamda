@@ -125,7 +125,7 @@ resource "aws_lambda_function" "main" {
   }
 
   vpc_config {
-    subnet_ids         = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id, aws_subnet.subnet_3.id]
+    subnet_ids         = [aws_subnet.subnet_1.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
