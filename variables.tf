@@ -98,4 +98,10 @@ variable "dynamodb_source_type" {
   description = "Type of the source attribute in DynamoDB table."
   type        = string
   default     = "S"
+}
+
+variable "newsletter_table_name" {
+  description = "DynamoDB table name for newsletter email collection."
+  type        = string
+  default     = "email-collection-table"
 } 

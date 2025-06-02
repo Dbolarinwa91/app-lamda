@@ -47,3 +47,18 @@ output "api_invoke_url" {
   description = "Invoke URL for the deployed API Gateway stage"
   value       = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/contact"
 }
+
+output "api_gateway_newsletter_resource_id" {
+  description = "The ID of the API Gateway /newsletter resource"
+  value       = aws_api_gateway_resource.newsletter.id
+}
+
+output "api_gateway_newsletter_post_method_id" {
+  description = "The ID of the API Gateway POST method for /newsletter"
+  value       = aws_api_gateway_method.post_newsletter.id
+}
+
+output "api_newsletter_invoke_url" {
+  description = "Invoke URL for the /newsletter endpoint"
+  value       = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/newsletter"
+}

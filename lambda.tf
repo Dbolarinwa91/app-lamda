@@ -234,4 +234,177 @@ resource "aws_api_gateway_integration_response" "options_contact" {
     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'" # Or your domain
   }
+}
+
+# --- API Gateway Integration for /newsletter ---
+
+resource "aws_api_gateway_resource" "newsletter" {
+  rest_api_id = aws_api_gateway_rest_api.lambda_api.id
+  parent_id   = aws_api_gateway_rest_api.lambda_api.root_resource_id
+  path_part   = "newsletter"
+}
+
+resource "aws_api_gateway_method" "post_newsletter" {
+  rest_api_id   = aws_api_gateway_rest_api.lambda_api.id
+  resource_id   = aws_api_gateway_resource.newsletter.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "lambda_post_newsletter" {
+  rest_api_id             = aws_api_gateway_rest_api.lambda_api.id
+  resource_id             = aws_api_gateway_resource.newsletter.id
+  http_method             = aws_api_gateway_method.post_newsletter.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.newsletter.invoke_arn
+}
+
+# CORS for /newsletter OPTIONS
+resource "aws_api_gateway_method" "options_newsletter" {
+  rest_api_id   = aws_api_gateway_rest_api.lambda_api.id
+  resource_id   = aws_api_gateway_resource.newsletter.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_newsletter" {
+  rest_api_id             = aws_api_gateway_rest_api.lambda_api.id
+  resource_id             = aws_api_gateway_resource.newsletter.id
+  http_method             = aws_api_gateway_method.options_newsletter.http_method
+  type                    = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "options_newsletter" {
+  rest_api_id = aws_api_gateway_rest_api.lambda_api.id
+  resource_id = aws_api_gateway_resource.newsletter.id
+  http_method = aws_api_gateway_method.options_newsletter.http_method
+  status_code = "200"
+  response_models = {
+    "application/json" = "Empty"
+  }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_newsletter" {
+  rest_api_id = aws_api_gateway_rest_api.lambda_api.id
+  resource_id = aws_api_gateway_resource.newsletter.id
+  http_method = aws_api_gateway_method.options_newsletter.http_method
+  status_code = aws_api_gateway_method_response.options_newsletter.status_code
+  response_templates = {
+    "application/json" = ""
+  }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}
+
+# Update deployment dependencies
+data "aws_api_gateway_deployment" "lambda_api" {
+  depends_on = [
+    aws_api_gateway_integration.lambda_post,
+    aws_api_gateway_integration.options_contact,
+    aws_api_gateway_method.options_contact,
+    aws_api_gateway_method_response.options_contact,
+    aws_api_gateway_integration_response.options_contact,
+    aws_api_gateway_integration.lambda_post_newsletter,
+    aws_api_gateway_integration.options_newsletter,
+    aws_api_gateway_method.options_newsletter,
+    aws_api_gateway_method_response.options_newsletter,
+    aws_api_gateway_integration_response.options_newsletter
+  ]
+  rest_api_id = aws_api_gateway_rest_api.lambda_api.id
+}
+
+# --- IAM Assume Role Policy for Newsletter Lambda ---
+data "aws_iam_policy_document" "assume_role_newsletter" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+# --- IAM Role for Newsletter Lambda ---
+resource "aws_iam_role" "lambda_exec_newsletter" {
+  name = "lambda_exec_newsletter_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_newsletter.json
+}
+
+# --- IAM Policy for Newsletter Lambda DynamoDB Access ---
+resource "aws_iam_policy" "lambda_newsletter_dynamodb_access" {
+  name        = "${var.project_name}-lambda-newsletter-dynamodb-access"
+  description = "Allow Lambda to access the newsletter DynamoDB table"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ],
+        Resource = "arn:aws:dynamodb:${var.aws_region}:*:table/${var.newsletter_table_name}"
+      }
+    ]
+  })
+}
+
+# --- Attach Policy to Newsletter Lambda Role ---
+resource "aws_iam_role_policy_attachment" "lambda_newsletter_dynamodb_access" {
+  role       = aws_iam_role.lambda_exec_newsletter.name
+  policy_arn = aws_iam_policy.lambda_newsletter_dynamodb_access.arn
+}
+
+# --- Attach Basic Execution Role for Logging ---
+resource "aws_iam_role_policy_attachment" "lambda_newsletter_logging" {
+  role       = aws_iam_role.lambda_exec_newsletter.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+# --- Archive the Newsletter Lambda Code ---
+data "archive_file" "lambda_newsletter" {
+  type        = "zip"
+  source_file = "${path.module}/lamda/index-newsletter.js"
+  output_path = "${path.module}/newsletter.zip"
+}
+
+# --- Lambda Function for Newsletter ---
+resource "aws_lambda_function" "newsletter" {
+  function_name = "${var.project_name}-newsletter-lambda"
+  role          = aws_iam_role.lambda_exec_newsletter.arn
+  handler       = "index-newsletter.handler"
+  runtime       = "nodejs18.x"
+  filename      = data.archive_file.lambda_newsletter.output_path
+  timeout       = 3
+  memory_size   = 128
+
+  environment {
+    variables = {
+      EMAILS_TABLE_NAME = var.newsletter_table_name
+    }
+  }
+
+  vpc_config {
+    subnet_ids         = [aws_subnet.subnet_1.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]
+  }
+
+  tags = local.common_tags
 } 
