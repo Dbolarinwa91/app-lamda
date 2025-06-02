@@ -395,4 +395,31 @@ resource "aws_lambda_function" "newsletter" {
   }
 
   tags = local.common_tags
+}
+
+resource "aws_iam_policy" "lambda_newsletter_vpc_access" {
+  name        = "${var.project_name}-lambda-newsletter-vpc-access"
+  description = "Allow Lambda to manage ENIs in VPC"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_newsletter_vpc_access" {
+  role       = aws_iam_role.lambda_exec_newsletter.name
+  policy_arn = aws_iam_policy.lambda_newsletter_vpc_access.arn
 } 
