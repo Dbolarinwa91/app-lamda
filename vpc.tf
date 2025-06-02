@@ -53,4 +53,17 @@ resource "aws_route_table" "public" {
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-public-rt"
   })
+}
+
+resource "aws_vpc_endpoint" "dynamodb" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${var.aws_region}.dynamodb"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids = [
+    aws_route_table.public.id,
+    aws_route_table.route_table.id
+  ]
+  tags = merge(local.common_tags, {
+    Name = "${var.project_name}-dynamodb-endpoint"
+  })
 } 
