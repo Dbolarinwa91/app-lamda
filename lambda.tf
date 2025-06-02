@@ -170,7 +170,13 @@ resource "aws_lambda_permission" "apigw" {
 }
 
 resource "aws_api_gateway_deployment" "lambda_api" {
-  depends_on  = [aws_api_gateway_integration.lambda_post]
+  depends_on = [
+    aws_api_gateway_integration.lambda_post,
+    aws_api_gateway_integration.options_contact,
+    aws_api_gateway_method.options_contact,
+    aws_api_gateway_method_response.options_contact,
+    aws_api_gateway_integration_response.options_contact
+  ]
   rest_api_id = aws_api_gateway_rest_api.lambda_api.id
 }
 
