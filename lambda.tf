@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "contact_submissions" {
-  name         = "contactsubmission-devops-david-site-project"
+  name         = var.dynamodb_table_name
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id"
 
@@ -8,8 +8,6 @@ resource "aws_dynamodb_table" "contact_submissions" {
     type = "S"
   }
 }
-
-
 
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec_role"

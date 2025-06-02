@@ -7,21 +7,21 @@ terraform {
   }
   backend "s3" {
     bucket = "devops-statefile-david-site-project-123456"
-    region = "us-east-1"
+    region = var.aws_region
     key    = "devops-statefile-david-site-project-123456/statefile-123456.tfstate"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  tags = {
-    Name = "vpc-1-devops-David-site-project"
-  }
+  tags = merge(local.common_tags, {
+    Name = local.vpc_name
+  })
 }
 
 resource "aws_subnet" "subnet_1" {
@@ -29,9 +29,9 @@ resource "aws_subnet" "subnet_1" {
   cidr_block              = "10.0.0.0/20"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
-  tags = {
-    Name = "subnet_1-devops-David-site-project"
-  }
+  tags = merge(local.common_tags, {
+    Name = local.subnet_1
+  })
 }
 
 resource "aws_subnet" "subnet_2" {
@@ -39,9 +39,9 @@ resource "aws_subnet" "subnet_2" {
   cidr_block              = "10.0.16.0/20"
   availability_zone       = "us-east-1c"
   map_public_ip_on_launch = true
-  tags = {
-    Name = "subnet_2-devops-David-site-project"
-  }
+  tags = merge(local.common_tags, {
+    Name = local.subnet_2
+  })
 }
 
 resource "aws_subnet" "subnet_3" {
@@ -49,9 +49,9 @@ resource "aws_subnet" "subnet_3" {
   cidr_block              = "10.0.32.0/20"
   availability_zone       = "us-east-1d"
   map_public_ip_on_launch = true
-  tags = {
-    Name = "subnet_3-devops-David-site-project"
-  }
+  tags = merge(local.common_tags, {
+    Name = local.subnet_3
+  })
 }
 
 resource "aws_route_table" "route_table" {
