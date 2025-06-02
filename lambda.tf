@@ -80,6 +80,11 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
   policy_arn = aws_iam_policy.lambda_vpc_access.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_logging" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_security_group" "lambda_sg" {
   name        = "${var.project_name}-lambda-sg"
   description = "Least privilege security group for Lambda"
