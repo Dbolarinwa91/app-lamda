@@ -38,4 +38,64 @@ variable "dynamodb_hash_key_type" {
   description = "Type of the hash key attribute."
   type        = string
   default     = "S"
+}
+
+variable "dynamodb_phone_type" {
+  description = "Type of the phone attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_fullName_type" {
+  description = "Type of the fullName attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_email_type" {
+  description = "Type of the email attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_company_type" {
+  description = "Type of the company attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_message_type" {
+  description = "Type of the message attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_submittedAt_type" {
+  description = "Type of the submittedAt attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_status_type" {
+  description = "Type of the status attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_ipAddress_type" {
+  description = "Type of the ipAddress attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_userAgent_type" {
+  description = "Type of the userAgent attribute in DynamoDB table."
+  type        = string
+  default     = "S"
+}
+
+variable "dynamodb_source_type" {
+  description = "Type of the source attribute in DynamoDB table."
+  type        = string
+  default     = "S"
 } 
