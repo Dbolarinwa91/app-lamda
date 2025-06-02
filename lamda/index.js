@@ -24,7 +24,9 @@ exports.handler = async (event) => {
         statusCode: 400,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*", // Adjust for your domain
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST",
+          "Access-Control-Allow-Headers": "Content-Type"
         },
         body: JSON.stringify({ error: "Missing required fields" }),
       };
@@ -39,6 +41,8 @@ exports.handler = async (event) => {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST",
+          "Access-Control-Allow-Headers": "Content-Type"
         },
         body: JSON.stringify({ error: "Invalid email format" }),
       };
@@ -74,7 +78,9 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Adjust for your domain
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST",
+        "Access-Control-Allow-Headers": "Content-Type"
       },
       body: JSON.stringify({
         message: "Contact form submitted successfully!",
@@ -92,6 +98,8 @@ exports.handler = async (event) => {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST",
+          "Access-Control-Allow-Headers": "Content-Type"
         },
         body: JSON.stringify({ error: "Submission conflict, please try again" }),
       };
@@ -104,6 +112,8 @@ exports.handler = async (event) => {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST",
+          "Access-Control-Allow-Headers": "Content-Type"
         },
         body: JSON.stringify({ error: "Invalid data format" }),
       };
@@ -114,6 +124,8 @@ exports.handler = async (event) => {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST",
+        "Access-Control-Allow-Headers": "Content-Type"
       },
       body: JSON.stringify({ error: "Internal server error" }),
     };
