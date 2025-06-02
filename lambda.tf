@@ -115,7 +115,7 @@ resource "aws_lambda_function" "main" {
   handler       = "index.handler"
   runtime       = "nodejs18.x"
   filename      = data.archive_file.lambda_hello_world.output_path
-  timeout       = 3
+  timeout       = 10
   memory_size   = 128
 
   environment {

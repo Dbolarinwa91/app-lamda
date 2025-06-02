@@ -10,13 +10,16 @@ const docClient = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = process.env.CONTACTS_TABLE_NAME || "contactsubmission-devops-david-site-project";
 
 exports.handler = async (event) => {
+  console.log("Lambda invoked", { event });
   try {
     const body = JSON.parse(event.body);
+    console.log("Parsed body", body);
 
     const { fullName, email, company, phone, message } = body;
 
     // Basic validation
     if (!fullName || !email || !company || !phone || !message) {
+      console.log("Validation failed: missing fields");
       return {
         statusCode: 400,
         headers: {
@@ -30,6 +33,7 @@ exports.handler = async (event) => {
     // Email validation (basic)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log("Validation failed: invalid email format");
       return {
         statusCode: 400,
         headers: {
@@ -52,6 +56,8 @@ exports.handler = async (event) => {
       status: "new", // Can be used for follow-up tracking
     };
 
+    console.log("Prepared contact item", contactItem);
+
     // Store in DynamoDB
     const putCommand = new PutCommand({
       TableName: TABLE_NAME,
@@ -60,13 +66,9 @@ exports.handler = async (event) => {
       ConditionExpression: "attribute_not_exists(id)",
     });
 
+    console.log("Sending PutCommand to DynamoDB", { TableName: TABLE_NAME });
     await docClient.send(putCommand);
-
-    console.log("Contact form submission stored:", {
-      id: contactItem.id,
-      email: contactItem.email,
-      company: contactItem.company,
-    });
+    console.log("DynamoDB write successful");
 
     return {
       statusCode: 200,
