@@ -9,18 +9,20 @@ resource "aws_dynamodb_table" "contact_submissions" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec_role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-    }]
-  })
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_policy" "lambda_dynamodb_table_access" {
@@ -96,13 +98,18 @@ resource "aws_security_group" "lambda_sg" {
   })
 }
 
+data "archive_file" "lambda_hello_world" {
+  type        = "zip"
+  source_file = "${path.module}/lamda/hello-world.js"
+  output_path = "${path.module}/hello-world.zip"
+}
+
 resource "aws_lambda_function" "main" {
   function_name = "${var.project_name}-lambda"
   role          = aws_iam_role.lambda_exec.arn
   handler       = "hello-world.handler"
   runtime       = "nodejs18.x"
-  s3_bucket     = "devops-statefile-david-site-project-123456"
-  s3_key        = "web-app/index.zip"
+  filename      = data.archive_file.lambda_hello_world.output_path
   timeout       = 3
   memory_size   = 128
 
