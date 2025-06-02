@@ -167,5 +167,10 @@ resource "aws_lambda_permission" "apigw" {
 resource "aws_api_gateway_deployment" "lambda_api" {
   depends_on  = [aws_api_gateway_integration.lambda_post]
   rest_api_id = aws_api_gateway_rest_api.lambda_api.id
-  stage_name  = "prod"
+}
+
+resource "aws_api_gateway_stage" "prod" {
+  rest_api_id   = aws_api_gateway_rest_api.lambda_api.id
+  deployment_id = aws_api_gateway_deployment.lambda_api.id
+  stage_name    = "prod"
 } 
