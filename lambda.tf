@@ -422,4 +422,12 @@ resource "aws_iam_policy" "lambda_newsletter_vpc_access" {
 resource "aws_iam_role_policy_attachment" "lambda_newsletter_vpc_access" {
   role       = aws_iam_role.lambda_exec_newsletter.name
   policy_arn = aws_iam_policy.lambda_newsletter_vpc_access.arn
+}
+
+resource "aws_lambda_permission" "apigw_newsletter" {
+  statement_id  = "AllowAPIGatewayInvokeNewsletter"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.newsletter.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.lambda_api.execution_arn}/*/*"
 } 
