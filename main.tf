@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket = "devops-statefile-david-site-project-123456"
-    region = var.aws_region
+    region = "us-east-1"
     key    = "devops-statefile-david-site-project-123456/statefile-123456.tfstate"
   }
 }
