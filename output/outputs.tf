@@ -21,4 +21,14 @@ output "dynamodb_billing_mode" {
 output "dynamodb_hash_key" {
   description = "The hash key of the DynamoDB table."
   value       = aws_dynamodb_table.contact_submissions.hash_key
+}
+
+output "lambda_function_name" {
+  description = "The name of the Lambda function"
+  value       = aws_lambda_function.main.function_name
+}
+
+output "lambda_function_arn" {
+  description = "The ARN of the Lambda function"
+  value       = aws_lambda_function.main.arn
 } 

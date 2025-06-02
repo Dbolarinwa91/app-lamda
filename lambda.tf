@@ -51,6 +51,33 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb_access" {
   policy_arn = aws_iam_policy.lambda_dynamodb_table_access.arn
 }
 
+resource "aws_iam_policy" "lambda_vpc_access" {
+  name        = "${var.project_name}-lambda-vpc-access"
+  description = "Allow Lambda to manage ENIs in VPC"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = aws_iam_policy.lambda_vpc_access.arn
+}
+
 resource "aws_security_group" "lambda_sg" {
   name        = "${var.project_name}-lambda-sg"
   description = "Least privilege security group for Lambda"
