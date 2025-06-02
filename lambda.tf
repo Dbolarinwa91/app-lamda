@@ -100,7 +100,7 @@ resource "aws_security_group" "lambda_sg" {
 
 data "archive_file" "lambda_hello_world" {
   type        = "zip"
-  source_file = "${path.module}/lamda/hello-world.js"
+  source_file = "${path.module}/lamda/index.js"
   output_path = "${path.module}/hello-world.zip"
 }
 
