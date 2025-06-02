@@ -66,4 +66,15 @@ resource "aws_vpc_endpoint" "dynamodb" {
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-dynamodb-endpoint"
   })
+}
+
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${var.aws_region}.logs"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [aws_subnet.subnet_1.id]
+  security_group_ids = [aws_security_group.lambda_sg.id]
+  tags = merge(local.common_tags, {
+    Name = "${var.project_name}-logs-endpoint"
+  })
 } 
