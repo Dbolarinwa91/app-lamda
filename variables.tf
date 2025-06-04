@@ -104,4 +104,10 @@ variable "newsletter_table_name" {
   description = "DynamoDB table name for newsletter email collection."
   type        = string
   default     = "email-collection-table"
+}
+
+variable "github_token" {
+  description = "GitHub OAuth token for Amplify app connection"
+  type        = string
+  sensitive   = true
 } 
