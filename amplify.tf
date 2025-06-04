@@ -6,8 +6,8 @@ resource "aws_amplify_app" "pulse_robot" {
   enable_branch_auto_build = true
 
   environment_variables = {
-    CONTACT_API_URL    = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/contact"
-    NEWSLETTER_API_URL = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/newsletter"
+    VITE_CONTACT_API_URL       = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/contact"
+    VITE_NEWSLETTER_API_URL = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/newsletter"
   }
 }
 
