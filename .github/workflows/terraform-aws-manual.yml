@@ -23,9 +23,13 @@ jobs:
           terraform_version: 1.12.0  # Change as needed
 
       - name: Terraform Init
+        env:
+          TF_VAR_github_token: ${{ secrets.REPO_PAT }}
         run: terraform init
 
       - name: Terraform Plan
+        env:
+          TF_VAR_github_token: ${{ secrets.REPO_PAT }}
         run: terraform plan
 
       - name: Terraform Apply
