@@ -73,7 +73,7 @@ output "amplify_app_arn" {
   value       = aws_amplify_app.pulse_robot.arn
 }
 
-output "amplify_staging_branch_url" {
-  description = "The URL of the Amplify staging branch."
-  value       = "https://staging.${aws_amplify_app.pulse_robot.default_domain}"
+output "amplify_main_branch_url" {
+  description = "The URL of the Amplify main branch."
+  value       = "https://main.${aws_amplify_app.pulse_robot.default_domain}"
 }
