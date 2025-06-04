@@ -14,6 +14,6 @@ resource "aws_amplify_app" "pulse_robot" {
 resource "aws_amplify_branch" "staging" {
   app_id      = aws_amplify_app.pulse_robot.id
   branch_name = "staging"
-  stage       = "STAGING"
+  stage       = "DEVELOPMENT"
   enable_auto_build = true
 } 
