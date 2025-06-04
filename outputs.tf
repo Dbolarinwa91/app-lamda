@@ -62,3 +62,18 @@ output "api_newsletter_invoke_url" {
   description = "Invoke URL for the /newsletter endpoint"
   value       = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}/newsletter"
 }
+
+output "amplify_app_id" {
+  description = "The ID of the Amplify app."
+  value       = aws_amplify_app.pulse_robot.id
+}
+
+output "amplify_app_arn" {
+  description = "The ARN of the Amplify app."
+  value       = aws_amplify_app.pulse_robot.arn
+}
+
+output "amplify_staging_branch_url" {
+  description = "The URL of the Amplify staging branch."
+  value       = aws_amplify_branch.staging.web_url
+}
