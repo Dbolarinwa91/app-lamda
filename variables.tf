@@ -19,7 +19,7 @@ variable "aws_region" {
 variable "dynamodb_table_name" {
   description = "DynamoDB table name for contact submissions."
   type        = string
-  default     = "contactsubmission-devops-david-site-project"
+  default     = "Users-signup-table"
 }
 
 variable "dynamodb_billing_mode" {

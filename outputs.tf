@@ -77,3 +77,8 @@ output "amplify_main_branch_url" {
   description = "The URL of the Amplify main branch."
   value       = "https://main.${aws_amplify_app.pulse_robot.default_domain}"
 }
+
+output "amplify_webhook_url" {
+  description = "The webhook URL for triggering builds"
+  value       = aws_amplify_webhook.main_branch_webhook.url
+}
